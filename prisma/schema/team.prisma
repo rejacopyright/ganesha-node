@@ -1,0 +1,24 @@
+model team {
+  id            String      @id @default(uuid())
+  category      String?
+  email         String      @unique
+  phone         String
+  full_name     String?
+  avatar        String?
+  birth         DateTime?
+  /// 1[Man] 2[Woman] 3[Other]
+  gender        Int?
+  /// 1[Yes]
+  marital       Int?
+  title         String?
+  province_id   Int?
+  city_id       Int?
+  address       String?
+  social        Json?
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
+  deleted       DateTime?
+
+  city          city?       @relation(fields: [city_id], references: [id])
+  province      province?   @relation(fields: [province_id], references: [id])
+}

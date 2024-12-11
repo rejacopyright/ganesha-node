@@ -1,0 +1,18 @@
+model province {
+  id        Int    @id @unique
+  name      String
+  latitude  String
+  longitude String
+  city      city[]
+  user      team[]
+}
+
+model city {
+  id          Int      @id @unique
+  province_id Int
+  name        String
+  latitude    String
+  longitude   String
+  province    province @relation(fields: [province_id], references: [id])
+  user        team[]
+}

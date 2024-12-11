@@ -1,0 +1,10 @@
+model config {
+  id                     Int     @id @unique
+  vision                 String?
+  mission                String?
+  phone                  String?
+  email                  String?
+  address                String?
+  latitude               String?
+  longitude              String?
+}
