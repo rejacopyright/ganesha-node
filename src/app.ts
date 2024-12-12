@@ -15,6 +15,7 @@ import accountAPI from './routes/account'
 import authAPI from './routes/auth'
 import globalAPI from './routes/global'
 import tagsAPI from './routes/tags'
+import productAPI from './routes/product'
 import AuthMiddleWare from './middleware/auth'
 
 const app = express()
@@ -41,6 +42,7 @@ app.use('/api/v1/global', globalAPI)
 app.use('/api/v1/users', AuthMiddleWare, usersAPI)
 app.use('/api/v1/team', AuthMiddleWare, teamAPI)
 app.use('/api/v1/tags', AuthMiddleWare, tagsAPI)
+app.use('/api/v1/product', AuthMiddleWare, productAPI)
 app.use('/api/v1', AuthMiddleWare, accountAPI)
 
 // catch 404 and forward to error handler
