@@ -33,7 +33,6 @@ export const CreateTeamValidator = z.object({
 // Get Team List
 router.get('/', async (req: any, res: any) => {
   const server = getServer(req)
-  console.log(`${server}/static/images/team/`)
   try {
     const q = req?.query?.q || ''
     const page = Number(req?.query?.page) || 1
