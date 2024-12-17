@@ -21,7 +21,8 @@ export const UserValidator = z.object({
     .string({ required_error: 'Email is required' })
     .max(100)
     .email('Email format is not valid'),
-  phone: z.string({ required_error: 'Phone is required' }).max(100),
+  first_name: z.string({ required_error: 'First name is required' }).max(100),
+  last_name: z.string({ required_error: 'Last name is required' }).max(100),
   password: z.string({ required_error: 'Password is required' }).max(100),
 })
 
@@ -88,15 +89,9 @@ router.post('/login', async (req, res: any) => {
 })
 
 router.post('/register', async (req, res: any) => {
-  const config = await prisma.config.findFirst()
-  const { voucher_new_user_type = 1, voucher_new_user_value = 0 }: any = config
-  const { username, password, email, phone } = req?.body
-  const anyUsername = await prisma.user.findFirst({
-    where: { username: username || '' },
-  })
-  const anyEmail = await prisma.user.findFirst({
-    where: { email: email || '' },
-  })
+  const { username, password, email, first_name, last_name, role_id } = req?.body
+  const anyUsername = await prisma.user.findFirst({ where: { username } })
+  const anyEmail = await prisma.user.findFirst({ where: { email } })
   if (anyUsername) {
     return res.status(400).json({ status: 'failed', message: 'Username has been taken' })
   }
@@ -107,29 +102,23 @@ router.post('/register', async (req, res: any) => {
   // STORE USER && VOUCHER
   prisma.$transaction(async () => {
     try {
-      const user = await prisma.user.create({
-        data: { username, email, phone, password: await bcrypt.hash(password, 10) },
+      const data = await prisma.user.create({
+        data: {
+          username,
+          email,
+          password: await bcrypt.hash(password, 10),
+          first_name,
+          last_name,
+          role_id,
+        },
       })
+      return res.status(200).json({ status: 'success', message: 'Register success', data })
     } catch (err: any) {
       const keyByErrors = keyBy(err?.errors, 'path.0')
       const errors = mapValues(keyByErrors, 'message')
       return res.status(400).json({ status: 'failed', message: errors })
     }
   })
-
-  // // Send the email
-  res.render('email/register_confirmation', { username, password }, (err, html) => {
-    sendMail({
-      from: {
-        name: 'Ganesha IT',
-        address: 'info@ganesha.id',
-      },
-      to: email,
-      subject: 'Ganesha IT - Registrasi',
-      html,
-    })
-  })
-  return res.status(200).json({ status: 'success', message: 'Daftar Berhasil' })
 })
 
 router.post('/token/refresh', AuthMiddleWare, async (req, res: any) => {

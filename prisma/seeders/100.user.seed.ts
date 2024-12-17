@@ -9,6 +9,7 @@ async function main() {
     where: { email: 'admin@email.com' },
     update: {},
     create: {
+      role_id: 4,
       email: 'admin@email.com',
       username: 'admin',
       password: await bcrypt.hash('Test@123', 10),

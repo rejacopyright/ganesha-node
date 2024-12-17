@@ -1,13 +1,13 @@
 model user {
   id            String      @id @default(uuid())
-  /// 1[User] 2[Developer] 3[Manager] 4[Admin] 5[Owner]
+  /// 1[User] 2[Creator] 3[Manager] 4[Admin] 5[Owner]
   role_id       Int         @default(1)
   /// 0[Unconfirmed] 1[Active] 2[Pasive] 3[Inactive]
   status        Int         @default(1)
   username      String      @unique
   password      String?
   email         String      @unique
-  phone         String
+  phone         String?
   first_name    String?
   last_name     String?
   created_at    DateTime    @default(now())

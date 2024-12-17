@@ -27,6 +27,7 @@ export const CreateBlogValidator = z.object({
 router.get('/', async (req: any, res: any) => {
   const server = getServer(req)
   try {
+    const user_id = req?.query?.user_id || ''
     const q = req?.query?.q || ''
     const page = Number(req?.query?.page) || 1
     const limit = Number(req?.query?.limit) || 10
@@ -35,6 +36,7 @@ router.get('/', async (req: any, res: any) => {
       limit,
       where: {
         // AND: [{}],
+        ...(user_id ? { user_id } : {}),
         OR: [
           { title: { contains: q?.toString(), mode: 'insensitive' } },
           { description: { contains: q?.toString(), mode: 'insensitive' } },
@@ -165,7 +167,7 @@ router.put('/:id/update', AuthMiddleWare, async (req: any, res: any) => {
       data: CreateBlogValidator.partial()
         .passthrough()
         .parse({
-          user_id: user?.id,
+          // user_id: user?.id,
           product_id: product_id && product_id !== 'all' ? product_id : null,
           title,
           description,
