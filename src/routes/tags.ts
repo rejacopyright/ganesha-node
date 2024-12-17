@@ -5,6 +5,7 @@ import keyBy from 'lodash/keyBy'
 import mapValues from 'lodash/mapValues'
 import { z } from 'zod'
 import { getServer } from '@src/_helper/function'
+import AuthMiddleWare from '@src/middleware/auth'
 
 const router = express.Router()
 
@@ -55,7 +56,7 @@ router.get('/:id/detail', async (req: any, res: any) => {
 })
 
 // Create Tag
-router.post('/create', async (req: any, res: any) => {
+router.post('/create', AuthMiddleWare, async (req: any, res: any) => {
   const { name } = req?.body
 
   try {
@@ -80,7 +81,7 @@ router.post('/create', async (req: any, res: any) => {
 })
 
 // Update Tag
-router.put('/:id/update', async (req: any, res: any) => {
+router.put('/:id/update', AuthMiddleWare, async (req: any, res: any) => {
   const { name } = req?.body
   const { id } = req?.params
 
@@ -99,7 +100,7 @@ router.put('/:id/update', async (req: any, res: any) => {
 })
 
 // Delete Tag
-router.delete('/:id/delete', async (req: any, res: any) => {
+router.delete('/:id/delete', AuthMiddleWare, async (req: any, res: any) => {
   const { id } = req?.params
 
   try {

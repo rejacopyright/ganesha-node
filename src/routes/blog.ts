@@ -7,6 +7,7 @@ import mapValues from 'lodash/mapValues'
 import fs from 'fs'
 import { z } from 'zod'
 import { getServer } from '@src/_helper/function'
+import AuthMiddleWare from '@src/middleware/auth'
 
 const router = express.Router()
 
@@ -39,11 +40,18 @@ router.get('/', async (req: any, res: any) => {
           { description: { contains: q?.toString(), mode: 'insensitive' } },
         ],
       },
-      // orderBy: { updated_at: 'desc' },
+      include: { user: true },
+      orderBy: { updated_at: 'desc' },
     })
     data.data = data?.data?.map((item) => {
       const newItem = item
       newItem.image = item?.image ? `${server}/static/images/blog/${item?.image}` : null
+      if (item?.user) {
+        const user = item?.user
+        newItem.user.full_name = user?.first_name
+          ? `${user?.first_name} ${user?.last_name}`
+          : user?.username
+      }
       return newItem
     })
     return res.status(200).json({ ...data })
@@ -57,9 +65,15 @@ router.get('/:id/detail', async (req: any, res: any) => {
   const server = getServer(req)
   try {
     const { id } = req?.params
-    const data = await prisma.blog.findUnique({ where: { id: id } })
+    const data = await prisma.blog.findUnique({ where: { id: id }, include: { user: true } })
     const newData: any = data || {}
     newData.image = data?.image ? `${server}/static/images/blog/${data?.image}` : null
+    if (data?.user) {
+      const user = data?.user
+      newData.user.full_name = user?.first_name
+        ? `${user?.first_name} ${user?.last_name}`
+        : user?.username
+    }
     return res.status(200).json(newData)
   } catch (err: any) {
     return res.status(400).json({ status: 'failed', message: err })
@@ -67,7 +81,7 @@ router.get('/:id/detail', async (req: any, res: any) => {
 })
 
 // Create Blog
-router.post('/create', async (req: any, res: any) => {
+router.post('/create', AuthMiddleWare, async (req: any, res: any) => {
   const { title, description, image, product_id, tags } = req?.body
   const user = req?.user
 
@@ -111,7 +125,7 @@ router.post('/create', async (req: any, res: any) => {
 })
 
 // Update Blog
-router.put('/:id/update', async (req: any, res: any) => {
+router.put('/:id/update', AuthMiddleWare, async (req: any, res: any) => {
   const { title, description, image, isImageChanged, product_id, tags } = req?.body
   const { id } = req?.params
   const user = req?.user
@@ -169,7 +183,7 @@ router.put('/:id/update', async (req: any, res: any) => {
 })
 
 // Delete Blog
-router.delete('/:id/delete', async (req: any, res: any) => {
+router.delete('/:id/delete', AuthMiddleWare, async (req: any, res: any) => {
   const { id } = req?.params
 
   try {

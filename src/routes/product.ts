@@ -4,6 +4,7 @@ import { prismaX } from '@helper/pagination'
 import keyBy from 'lodash/keyBy'
 import mapValues from 'lodash/mapValues'
 import { z } from 'zod'
+import AuthMiddleWare from '@src/middleware/auth'
 
 const router = express.Router()
 
@@ -55,7 +56,7 @@ router.get('/:id/detail', async (req: any, res: any) => {
 })
 
 // Create Product
-router.post('/create', async (req: any, res: any) => {
+router.post('/create', AuthMiddleWare, async (req: any, res: any) => {
   const { name, description } = req?.body
 
   try {
@@ -82,7 +83,7 @@ router.post('/create', async (req: any, res: any) => {
 })
 
 // Update Product
-router.put('/:id/update', async (req: any, res: any) => {
+router.put('/:id/update', AuthMiddleWare, async (req: any, res: any) => {
   const { name, description } = req?.body
   const { id } = req?.params
 
@@ -103,7 +104,7 @@ router.put('/:id/update', async (req: any, res: any) => {
 })
 
 // Delete Product
-router.delete('/:id/delete', async (req: any, res: any) => {
+router.delete('/:id/delete', AuthMiddleWare, async (req: any, res: any) => {
   const { id } = req?.params
 
   try {

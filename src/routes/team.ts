@@ -8,6 +8,7 @@ import mapValues from 'lodash/mapValues'
 import fs from 'fs'
 import { z } from 'zod'
 import { getServer } from '@src/_helper/function'
+import AuthMiddleWare from '@src/middleware/auth'
 
 const router = express.Router()
 
@@ -76,7 +77,7 @@ router.get('/:id/detail', async (req: any, res: any) => {
 })
 
 // Create Team
-router.post('/create', async (req: any, res: any) => {
+router.post('/create', AuthMiddleWare, async (req: any, res: any) => {
   const { full_name, title, gender, social, email, phone, image, category } = req?.body
 
   try {
@@ -121,7 +122,7 @@ router.post('/create', async (req: any, res: any) => {
 })
 
 // Update Team
-router.put('/:id/update', async (req: any, res: any) => {
+router.put('/:id/update', AuthMiddleWare, async (req: any, res: any) => {
   const { full_name, title, gender, social, email, phone, image, category, isImageChanged } =
     req?.body
   const { id } = req?.params
@@ -179,7 +180,7 @@ router.put('/:id/update', async (req: any, res: any) => {
 })
 
 // Delete Team
-router.delete('/:id/delete', async (req: any, res: any) => {
+router.delete('/:id/delete', AuthMiddleWare, async (req: any, res: any) => {
   const { id } = req?.params
 
   try {
