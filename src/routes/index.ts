@@ -10,7 +10,7 @@ const prisma = new PrismaClient()
 router.get('/', async (req, res: any, next) => {
   const test = moment().format('yyyy-MM-DD HH:mm:ss ZZ')
   const phoneStr = '085766666393'
-  const phone = { sliced: phoneStr?.slice(-10), ln: phoneStr?.length }
+  const phone = { sliced: phoneStr?.slice(-8), ln: phoneStr?.length }
   return res.status(200).json({ oke: 'okelah7', test, phone })
 })
 
