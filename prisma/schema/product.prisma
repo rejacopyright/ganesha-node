@@ -1,6 +1,15 @@
 model product {
   id          String      @id @default(uuid())
+  category_id String?
+  /// 0[Inactive] 1[Active]
+  status      Int         @default(1)
   name        String
+  image       String?
   description String?
-  tags        String[]
+  tags        Json[]      @default([])
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
+  deleted     DateTime?
+
+  category    product_category?    @relation(fields: [category_id], references: [id], onDelete: SetNull)
 }
