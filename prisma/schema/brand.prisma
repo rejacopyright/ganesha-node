@@ -1,0 +1,7 @@
+model brand {
+  id            String      @id @default(uuid())
+  image         String?
+  title         String?
+  description   String?
+
+}
